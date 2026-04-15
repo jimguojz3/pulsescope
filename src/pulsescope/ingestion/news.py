@@ -37,7 +37,7 @@ def search_news(
             except ValueError:
                 continue
         else:
-            pub_dt = datetime.now()
+            continue
 
         if pub_dt >= cutoff:
             results.append(

@@ -40,3 +40,80 @@ def test_search_news_raises_without_api_key():
     with patch.dict(os.environ, {}, clear=True):
         with pytest.raises(RuntimeError, match="TAVILY_API_KEY not set"):
             search_news(query="test")
+
+
+@patch.dict(os.environ, {"TAVILY_API_KEY": "fake-key"})
+@patch("pulsescope.ingestion.news.datetime")
+def test_search_news_skips_missing_dates(mock_datetime):
+    mock_datetime.now.return_value = datetime(2025, 4, 15)
+    mock_datetime.strptime = datetime.strptime
+    mock_datetime.timedelta = timedelta
+
+    search_result = {
+        "results": [
+            {
+                "title": "Article with no date",
+                "url": "https://example.com/no-date",
+                "content": "This article has no date field.",
+            }
+        ]
+    }
+
+    with patch("pulsescope.ingestion.news.TavilyClient") as MockClient:
+        instance = MockClient.return_value
+        instance.search.return_value = search_result
+        results = search_news(query="test", days_back=7)
+
+    assert len(results) == 0
+
+
+@patch.dict(os.environ, {"TAVILY_API_KEY": "fake-key"})
+@patch("pulsescope.ingestion.news.datetime")
+def test_search_news_skips_malformed_dates(mock_datetime):
+    mock_datetime.now.return_value = datetime(2025, 4, 15)
+    mock_datetime.strptime = datetime.strptime
+    mock_datetime.timedelta = timedelta
+
+    search_result = {
+        "results": [
+            {
+                "title": "Article with bad date",
+                "url": "https://example.com/bad-date",
+                "content": "This article has a malformed date.",
+                "published_date": "not-a-date",
+            }
+        ]
+    }
+
+    with patch("pulsescope.ingestion.news.TavilyClient") as MockClient:
+        instance = MockClient.return_value
+        instance.search.return_value = search_result
+        results = search_news(query="test", days_back=7)
+
+    assert len(results) == 0
+
+
+@patch.dict(os.environ, {"TAVILY_API_KEY": "fake-key"})
+@patch("pulsescope.ingestion.news.datetime")
+def test_search_news_skips_out_of_range_dates(mock_datetime):
+    mock_datetime.now.return_value = datetime(2025, 4, 15)
+    mock_datetime.strptime = datetime.strptime
+    mock_datetime.timedelta = timedelta
+
+    search_result = {
+        "results": [
+            {
+                "title": "Old article",
+                "url": "https://example.com/old",
+                "content": "This article is too old.",
+                "published_date": "2025-04-01",
+            }
+        ]
+    }
+
+    with patch("pulsescope.ingestion.news.TavilyClient") as MockClient:
+        instance = MockClient.return_value
+        instance.search.return_value = search_result
+        results = search_news(query="test", days_back=7)
+
+    assert len(results) == 0
