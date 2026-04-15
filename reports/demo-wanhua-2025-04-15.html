@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PulseScope - 万华化学风险情报</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    line-height: 1.6;
+  }
+  .container { max-width: 960px; margin: 0 auto; padding: 40px 20px; }
+  header { margin-bottom: 32px; }
+  header h1 { font-size: 28px; font-weight: 600; color: #f8fafc; }
+  header p { color: #94a3b8; margin-top: 6px; font-size: 14px; }
+  .summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 18px 16px;
+    text-align: center;
+  }
+  .card .value { font-size: 26px; font-weight: 700; color: #f8fafc; }
+  .card .label { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+  .risk-high { color: #f87171; }
+  .risk-med { color: #fbbf24; }
+  .risk-low { color: #34d399; }
+  .report {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .report-header {
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #334155;
+  }
+  .report-title { font-size: 16px; font-weight: 600; color: #f8fafc; }
+  .badge {
+    display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;
+  }
+  .badge-high { background: rgba(248,113,113,.15); color: #f87171; border: 1px solid rgba(248,113,113,.35); }
+  .badge-med { background: rgba(251,191,36,.15); color: #fbbf24; border: 1px solid rgba(251,191,36,.35); }
+  .badge-low { background: rgba(52,211,153,.15); color: #34d399; border: 1px solid rgba(52,211,153,.35); }
+  .section { margin-top: 14px; }
+  .section-title { font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+  .reasoning { color: #cbd5e1; font-size: 14px; }
+  .chain { list-style: none; }
+  .chain li {
+    position: relative; padding-left: 22px; margin-bottom: 8px; font-size: 14px; color: #cbd5e1;
+  }
+  .chain li::before {
+    content: attr(data-step); position: absolute; left: 0; top: 0;
+    width: 16px; height: 16px; border-radius: 50%; background: #334155; color: #f8fafc;
+    font-size: 10px; display: flex; align-items: center; justify-content: center;
+  }
+  .metrics { display: flex; flex-wrap: wrap; gap: 8px; }
+  .metric {
+    background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 6px 12px; font-size: 13px; color: #cbd5e1;
+  }
+  footer { text-align: center; color: #64748b; font-size: 12px; margin-top: 40px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>PulseScope 风险情报</h1>
+    <p>企业：万华化学 · 分析时间：2025-04-15 · 数据来源：新闻+公告+知识图谱</p>
+  </header>
+
+  <div class="summary">
+    <div class="card">
+      <div class="value">3</div>
+      <div class="label">风险事件</div>
+    </div>
+    <div class="card">
+      <div class="value risk-high">2</div>
+      <div class="label">高风险</div>
+    </div>
+    <div class="card">
+      <div class="value risk-med">1</div>
+      <div class="label">中风险</div>
+    </div>
+    <div class="card">
+      <div class="value risk-low">0</div>
+      <div class="label">低风险</div>
+    </div>
+  </div>
+
+  <div class="report">
+    <div class="report-header">
+      <div class="report-title">MDI与TDI价格短期内大幅上涨，化工原料价差显著扩大</div>
+      <span class="badge badge-high">高风险</span>
+    </div>
+    <div class="section">
+      <div class="section-title">推理</div>
+      <div class="reasoning">核心产品价格短期暴涨超50%且化工价差显著扩大，表明市场供需极度失衡，极易引发上游原材料成本剧烈波动、采购断供及下游需求骤降的连锁风险。</div>
+    </div>
+    <div class="section">
+      <div class="section-title">影响链</div>
+      <ul class="chain">
+        <li data-step="1">MDI/TDI价格暴涨刺激下游集中备货，反向拉动苯胺、甲苯等上游原材料需求激增与供应趋紧</li>
+        <li data-step="2">原材料跟涨导致采购成本快速攀升且价差剧烈波动，加剧供应商违约风险与企业资金周转压力</li>
+        <li data-step="3">高成本与中欧/中东航线运力及运费波动叠加，迫使采购策略频繁调整，最终引发供应链中断与库存错配风险</li>
+      </ul>
+    </div>
+    <div class="section">
+      <div class="section-title">关键监测指标</div>
+      <div class="metrics">
+        <span class="metric">苯胺与甲苯采购价格波动率</span>
+        <span class="metric">MDI/TDI与核心原材料价差指数</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="report">
+    <div class="report-header">
+      <div class="report-title">万华化学烟台产业园75万吨/年PDH装置计划停产检修约30天</div>
+      <span class="badge badge-med">中风险</span>
+    </div>
+    <div class="section">
+      <div class="section-title">推理</div>
+      <div class="reasoning">该事件为计划内常规检修，整体风险可控，但75万吨级装置停产30天将导致丙烯等关键中间体自供中断，需依赖库存或外购平衡，对供应链弹性提出考验。</div>
+    </div>
+    <div class="section">
+      <div class="section-title">影响链</div>
+      <ul class="chain">
+        <li data-step="1">PDH装置停产导致丙烯及下游石化原料自供量骤降</li>
+        <li data-step="2">配套装置同步降负荷运行并启动外部原料采购或库存调配</li>
+        <li data-step="3">短期区域原料供应趋紧，可能引发下游产品交付周期延长及价格波动</li>
+      </ul>
+    </div>
+    <div class="section">
+      <div class="section-title">关键监测指标</div>
+      <div class="metrics">
+        <span class="metric">丙烯/液化气安全库存天数与外购成本</span>
+        <span class="metric">下游配套装置实际负荷率及订单交付准时率</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="report">
+    <div class="report-header">
+      <div class="report-title">万华化学MDI产品面临海外倾销指控及潜在贸易摩擦</div>
+      <span class="badge badge-high">高风险</span>
+    </div>
+    <div class="section">
+      <div class="section-title">推理</div>
+      <div class="reasoning">MDI是万华化学核心出口产品，海外倾销指控极易触发高额反倾销税或进口配额，直接削弱目标市场需求并冲击公司海外营收。</div>
+    </div>
+    <div class="section">
+      <div class="section-title">影响链</div>
+      <ul class="chain">
+        <li data-step="1">海外监管机构启动反倾销调查并可能加征惩罚性关税或实施进口限制</li>
+        <li data-step="2">中国至欧洲/中东/东南亚航线运输成本与终端售价上升导致客户转向替代供应商</li>
+        <li data-step="3">MDI出口订单量下滑引发产能利用率下降及整体营收利润承压</li>
+      </ul>
+    </div>
+    <div class="section">
+      <div class="section-title">关键监测指标</div>
+      <div class="metrics">
+        <span class="metric">目标市场反倾销调查进展及最终裁定税率</span>
+        <span class="metric">MDI海外出口订单量及重点航线区域市场份额变化</span>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Generated by PulseScope Phase 1 MVP · 结构化供应链风险推理引擎
+  </footer>
+</div>
+</body>
+</html>
