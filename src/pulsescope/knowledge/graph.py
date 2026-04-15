@@ -23,6 +23,18 @@ class KnowledgeGraph:
         neighbors = self._g.neighbors(company)
         return [n for n in neighbors if self._g.nodes[n].get("node_type") == "route"]
 
+    def query_products(self, company: str) -> list[str]:
+        if company not in self._g:
+            return []
+        neighbors = self._g.neighbors(company)
+        return [n for n in neighbors if self._g.edges[company, n].get("relation") == "produces"]
+
+    def query_materials(self, company: str) -> list[str]:
+        if company not in self._g:
+            return []
+        neighbors = self._g.neighbors(company)
+        return [n for n in neighbors if self._g.edges[company, n].get("relation") == "uses"]
+
     def query_companies_by_route(self, route: str) -> list[str]:
         if route not in self._g:
             return []
