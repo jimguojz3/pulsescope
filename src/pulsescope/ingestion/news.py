@@ -15,12 +15,22 @@ def search_news(
         raise RuntimeError("TAVILY_API_KEY not set")
 
     client = TavilyClient(api_key=api_key)
+    # Tavily time_range expects day/week/month/year or d/w/m/y
+    if days_back <= 1:
+        time_range = "day"
+    elif days_back <= 7:
+        time_range = "week"
+    elif days_back <= 30:
+        time_range = "month"
+    else:
+        time_range = "year"
+
     search_kwargs = {
         "query": query,
         "search_depth": "basic",
         "max_results": max_results,
         "include_answer": False,
-        "time_range": f"d{days_back}",
+        "time_range": time_range,
     }
     if include_domains is not None:
         search_kwargs["include_domains"] = include_domains
@@ -36,17 +46,16 @@ def search_news(
                 pub_dt = datetime.strptime(published[:10], "%Y-%m-%d")
             except ValueError:
                 continue
-        else:
-            continue
-
-        if pub_dt >= cutoff:
-            results.append(
-                {
-                    "title": item.get("title", ""),
-                    "source": item.get("url", ""),
-                    "content": item.get("content", ""),
-                    "date": published[:10] if published else datetime.now().strftime("%Y-%m-%d"),
-                }
-            )
+            if pub_dt < cutoff:
+                continue
+        # If no date is present, trust Tavily's time_range filtering
+        results.append(
+            {
+                "title": item.get("title", ""),
+                "source": item.get("url", ""),
+                "content": item.get("content", ""),
+                "date": published[:10] if published else datetime.now().strftime("%Y-%m-%d"),
+            }
+        )
 
     return results

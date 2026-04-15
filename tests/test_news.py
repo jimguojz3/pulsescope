@@ -44,7 +44,7 @@ def test_search_news_raises_without_api_key():
 
 @patch.dict(os.environ, {"TAVILY_API_KEY": "fake-key"})
 @patch("pulsescope.ingestion.news.datetime")
-def test_search_news_skips_missing_dates(mock_datetime):
+def test_search_news_includes_items_without_dates(mock_datetime):
     mock_datetime.now.return_value = datetime(2025, 4, 15)
     mock_datetime.strptime = datetime.strptime
     mock_datetime.timedelta = timedelta
@@ -64,7 +64,8 @@ def test_search_news_skips_missing_dates(mock_datetime):
         instance.search.return_value = search_result
         results = search_news(query="test", days_back=7)
 
-    assert len(results) == 0
+    assert len(results) == 1
+    assert results[0]["title"] == "Article with no date"
 
 
 @patch.dict(os.environ, {"TAVILY_API_KEY": "fake-key"})
@@ -117,3 +118,28 @@ def test_search_news_skips_out_of_range_dates(mock_datetime):
         results = search_news(query="test", days_back=7)
 
     assert len(results) == 0
+
+
+@patch.dict(os.environ, {"TAVILY_API_KEY": "fake-key"})
+def test_search_news_passes_valid_time_range():
+    with patch("pulsescope.ingestion.news.TavilyClient") as MockClient:
+        instance = MockClient.return_value
+        instance.search.return_value = {"results": []}
+        search_news(query="test", days_back=7)
+        kwargs = instance.search.call_args.kwargs
+        assert kwargs["time_range"] == "week"
+
+        instance.search.return_value = {"results": []}
+        search_news(query="test", days_back=1)
+        kwargs = instance.search.call_args.kwargs
+        assert kwargs["time_range"] == "day"
+
+        instance.search.return_value = {"results": []}
+        search_news(query="test", days_back=30)
+        kwargs = instance.search.call_args.kwargs
+        assert kwargs["time_range"] == "month"
+
+        instance.search.return_value = {"results": []}
+        search_news(query="test", days_back=365)
+        kwargs = instance.search.call_args.kwargs
+        assert kwargs["time_range"] == "year"
