@@ -1,3 +1,5 @@
+import json
+
 from mcp.server.fastmcp import FastMCP
 
 from pulsescope.core import analyze_company
@@ -16,11 +18,25 @@ def analyze_company_risk(company_name: str, days_back: int = 7) -> str:
     Returns:
         A JSON-formatted risk report string.
     """
-    import json
+    if days_back < 1:
+        return json.dumps(
+            {"status": "error", "message": "days_back must be >= 1", "company": company_name},
+            ensure_ascii=False,
+        )
 
-    reports = analyze_company(company_name=company_name, days_back=days_back)
+    try:
+        reports = analyze_company(company_name=company_name, days_back=days_back)
+    except Exception as exc:
+        return json.dumps(
+            {"status": "error", "message": str(exc), "company": company_name},
+            ensure_ascii=False,
+        )
+
     if not reports:
-        return json.dumps({"status": "no_risk_events_detected", "company": company_name}, ensure_ascii=False)
+        return json.dumps(
+            {"status": "no_risk_events_detected", "company": company_name},
+            ensure_ascii=False,
+        )
     return json.dumps(reports, ensure_ascii=False, indent=2)
 
 
