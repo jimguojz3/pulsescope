@@ -1,6 +1,23 @@
+# Git worktrees
 .worktrees/
+
+# Python
 *.pyc
-.venv/
 __pycache__/
+.venv/
+
+# OS
 .DS_Store
+
+# Transient files
 tmp/
+
+# Environment variables
+.env
+
+# Database
+data/pulsescope.db
+
+# IDE
+.vscode/
+.idea/
