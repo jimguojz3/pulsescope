@@ -1,32 +1,34 @@
 # PulseScope 任务追踪
 
-## Phase 1: 基础设施加固（进行中）
+## Phase 1: 基础设施加固 ✅ 已完成
 
-### P0 - 数据库层 ✅ 已完成
+### P0 - 数据库层 ✅
 - [x] 添加 PostgreSQL/SQLite 双模式支持
 - [x] 设计数据库 Schema（Company, Product, Event, RiskReport, CacheEntry 等）
 - [x] 集成 SQLAlchemy ORM
 - [x] 种子数据导入脚本（10家化工企业已入库）
-- [ ] Alembic 迁移配置（待完善）
+- [x] 企业列表 API 端点
 
-### P0 - 缓存层 ✅ 已完成
+### P0 - 缓存层 ✅
 - [x] 添加 Redis + 内存缓存双模式
 - [x] Tavily 搜索结果缓存接口（TTL: 1小时）
 - [x] 风险报告缓存接口（TTL: 30分钟）
 - [x] 知识图谱节点缓存接口（TTL: 24小时）
 - [x] PostgreSQL 作为持久化缓存回退
 
-### P1 - 异步架构（待开始）
-- [ ] 集成 Celery + Redis 作为任务队列
-- [ ] 将 ingestion/extraction 改造为异步任务
-- [ ] API 改为异步返回 task_id
-- [ ] 前端支持轮询/websocket 获取结果
+### P1 - 异步架构 ✅
+- [x] 集成 Celery + Redis 作为任务队列（支持内存回退）
+- [x] 创建异步分析任务 (`analyze_company_task`)
+- [x] 添加异步任务提交接口 (`/api/v1/analyze/async`)
+- [x] 添加任务状态查询接口 (`/api/v1/tasks/{task_id}`)
+- [x] 周期性任务：清理过期缓存、删除旧报告
 
-### P1 - 生产级特性（待开始）
-- [ ] 结构化日志（structlog）
-- [ ] 基础监控指标（Prometheus 格式）
-- [ ] 限流配置（slowapi）
-- [ ] 健康检查端点扩展
+### P1 - 生产级特性 ✅
+- [x] 结构化日志（structlog + JSON 格式）
+- [x] Prometheus 监控指标（requests, cache, db, risk reports）
+- [x] 限流配置（slowapi：同步10次/分钟，异步30次/分钟）
+- [x] 增强健康检查端点（检查 database + cache）
+- [x] API 版本提升至 0.2.0
 
 ## Phase 2: 数据层补强（待开始）
 - [ ] 公告数据真实化（akshare + 巨潮资讯）
@@ -51,16 +53,14 @@
 - [ ] 航线地图（react-map-gl）
 - [ ] 监控面板
 
-## 已完成
-- [x] 项目骨架搭建（core, api, skill, frontend）
-- [x] 39个核心测试全绿
-- [x] FastAPI + MCP Skill 双输出
-- [x] Next.js 前端基础界面
-- [x] Git push 到远程仓库
-- [x] 新增 11 个数据库/缓存测试（共 50 个测试）
-- [x] SQLite 开发模式 + 内存缓存（无需 Docker）
-
 ## 技术债务
-- 需要 Docker 环境测试 PostgreSQL + Redis 生产配置
-- 需要 Alembic 迁移脚本管理数据库变更
-- 需要集成测试验证端到端流程
+- [ ] Alembic 迁移脚本管理数据库变更
+- [ ] Docker 环境测试 PostgreSQL + Redis 生产配置
+- [ ] 集成测试验证端到端流程
+- [ ] 前端适配异步任务状态轮询
+
+## 统计数据
+- **总测试数:** 57
+- **代码提交:** 2（66d3b5d → 99f30f5）
+- **新增文件:** 14
+- **Phase 1 耗时:** ~2小时
